@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Text to Google Doc</title>
+</head>
+<body>
+  <h1>Input Text</h1>
+  <textarea id="textInput" rows="10" cols="50" placeholder="Enter your text here..."></textarea>
+  <br><br>
+  <button onclick="copyToGoogleDoc()">Copy to Google Doc</button>
+  <button onclick="downloadAsWord()">Download as Word File</button>
+
+  <script>
+    async function copyToGoogleDoc() {
+      const text = document.getElementById('textInput').value;
+      const response = await fetch('https://script.google.com/macros/s/AKfycbwGrgxU7Yk0oPPk1rr-xvN0E9hwIGQ4AgsqqV92IzzwvjQvUV3R4Oe_ll8OdT8W5YIr/exec', {
+        method: 'POST',
+        body: JSON.stringify({ text: text }),
+        headers: {
+          'Content-Type': 'application/json'
+        }
+      });
+      const result = await response.json();
+      alert(result.message);
+    }
+
+    async function downloadAsWord() {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbwGrgxU7Yk0oPPk1rr-xvN0E9hwIGQ4AgsqqV92IzzwvjQvUV3R4Oe_ll8OdT8W5YIr/exec?download=true');
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'document.docx';
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+    }
+  </script>
+</body>
+</html>
